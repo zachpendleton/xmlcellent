@@ -2,6 +2,7 @@ require 'helper'
 
 class Item
   attr_accessor :name
+  attr_accessor :summary
 end
 
 class TestXmlcellent < Test::Unit::TestCase
@@ -70,6 +71,19 @@ class TestXmlcellent < Test::Unit::TestCase
     result = Xmlcellent::Parser.parse_format_five(@xml)
     assert_equal result.length, 3
     assert_equal result[0].name, "Item one"
+  end
+
+  def test_should_parse_xml_by_applying_a_lambda
+    Xmlcellent::Parser.define_format :format_six, Item, {
+      :finder => "//item",
+      :lexicon => {
+        :summary => lambda { |obj|
+          obj.xpath("summary/paragraph").inject("") { |c, p| c + p.text }
+        }
+      }
+    }
+    result = Xmlcellent::Parser.parse_format_six(@xml)
+    assert_equal result[0].summary.scan(/Lorem/).length, 3
   end
 
 end

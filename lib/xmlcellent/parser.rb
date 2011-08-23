@@ -21,7 +21,8 @@ module Xmlcellent
               @formats[name].lexicon.each do |key, path|
                 next if path.nil? # fail silently if given a bad path
 
-                m.send("#{key.to_s}=".to_sym, obj.xpath(path).text)
+                value = path.class == Proc ? path.call(obj) : obj.xpath(path).text
+                m.send("#{key.to_s}=".to_sym, value)
               end
               results << m
             end
