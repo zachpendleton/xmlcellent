@@ -3,13 +3,15 @@ require 'helper'
 class Item
   attr_accessor :name
   attr_accessor :summary
+  attr_accessor :color
+  attr_accessor :supplier
 end
 
 class TestXmlcellent < Test::Unit::TestCase
   def setup
     @xml ||= <<-END
       <items>
-        <item>
+        <item supplier="Dunder Mifflin">
           <name>Item one</name>
           <description color="red">Lorem ipsum dolor</description>
           <summary>
@@ -18,7 +20,7 @@ class TestXmlcellent < Test::Unit::TestCase
             <paragraph>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit, posuere a, pede.</paragraph>
           </summary>
         </item>
-        <item>
+        <item supplier="Plainview Medical">
           <name>Item two</name>
           <description color="blue">Lorem ipsum dolor</description>
           <summary>
@@ -27,7 +29,7 @@ class TestXmlcellent < Test::Unit::TestCase
             <paragraph>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit, posuere a, pede.</paragraph>
           </summary>
         </item>
-        <item>
+        <item supplier="Bluth Company">
           <name>Item three</name>
           <description color="yellow">Lorem ipsum dolor</description>
           <summary>
@@ -86,4 +88,17 @@ class TestXmlcellent < Test::Unit::TestCase
     assert_equal result[0].summary.scan(/Lorem/).length, 3
   end
 
+  def test_should_parse_xml_by_reading_attributes
+    Xmlcellent::Parser.define_format :format_seven, Item, {
+      :finder => "//item",
+      :lexicon => {
+        :color => "description/@color",
+        :supplier => "@supplier"
+      }
+    }
+
+    result = Xmlcellent::Parser.parse_format_seven(@xml)
+    assert_equal result[0].color, "red"
+    assert_equal result[0].supplier, "Dunder Mifflin"
+  end
 end
