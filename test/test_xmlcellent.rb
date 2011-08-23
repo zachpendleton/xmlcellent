@@ -42,41 +42,41 @@ class TestXmlcellent < Test::Unit::TestCase
     END
   end
   def test_should_create_a_new_parser_on_call_to_define_parser
-    Xmlcellent::Parser.define_format :format_one
-    assert Xmlcellent::Parser.singleton_methods.include? :parse_format_one
+    Xmlcellent::Parser.define_format :test_format
+    assert Xmlcellent::Parser.singleton_methods.include? :parse_test_format
   end
 
   def test_define_parser_should_create_a_new_format_object
-    Xmlcellent::Parser.define_format :format_two
-    assert Xmlcellent::Parser.formats[:format_two].class == Xmlcellent::Format
+    Xmlcellent::Parser.define_format :test_format
+    assert Xmlcellent::Parser.formats[:test_format].class == Xmlcellent::Format
   end
 
   def test_define_parser_should_add_new_format_to_formats_variable
-    Xmlcellent::Parser.define_format :format_three
-    assert Xmlcellent::Parser.formats.has_key? :format_three
+    Xmlcellent::Parser.define_format :test_format
+    assert Xmlcellent::Parser.formats.has_key? :test_format
   end
 
   def test_define_parser_should_raise_an_error_on_duplicate_key
-    Xmlcellent::Parser.define_format :format_four
+    Xmlcellent::Parser.define_format :test_format
     assert_raise(RuntimeError) do
-      Xmlcellent::Parser.define_format :format_four
+      Xmlcellent::Parser.define_format :test_format
     end
   end
 
   def test_should_parse_xml_when_passed_a_string_of_xml
-    Xmlcellent::Parser.define_format :format_five, Item, {
+    Xmlcellent::Parser.define_format :test_format, Item, {
       :finder => "//item",
       :lexicon => {
         :name => "name"
       }
     }
-    result = Xmlcellent::Parser.parse_format_five(@xml)
+    result = Xmlcellent::Parser.parse_test_format(@xml)
     assert_equal result.length, 3
     assert_equal result[0].name, "Item one"
   end
 
   def test_should_parse_xml_by_applying_a_lambda
-    Xmlcellent::Parser.define_format :format_six, Item, {
+    Xmlcellent::Parser.define_format :test_format, Item, {
       :finder => "//item",
       :lexicon => {
         :summary => lambda { |obj|
@@ -84,12 +84,12 @@ class TestXmlcellent < Test::Unit::TestCase
         }
       }
     }
-    result = Xmlcellent::Parser.parse_format_six(@xml)
+    result = Xmlcellent::Parser.parse_test_format(@xml)
     assert_equal result[0].summary.scan(/Lorem/).length, 3
   end
 
   def test_should_parse_xml_by_reading_attributes
-    Xmlcellent::Parser.define_format :format_seven, Item, {
+    Xmlcellent::Parser.define_format :test_format, Item, {
       :finder => "//item",
       :lexicon => {
         :color => "description/@color",
@@ -97,8 +97,18 @@ class TestXmlcellent < Test::Unit::TestCase
       }
     }
 
-    result = Xmlcellent::Parser.parse_format_seven(@xml)
+    result = Xmlcellent::Parser.parse_test_format(@xml)
     assert_equal result[0].color, "red"
     assert_equal result[0].supplier, "Dunder Mifflin"
+  end
+
+  def test_should_delete_all_formats_on_call_to_delete_formats
+    Xmlcellent::Parser.define_format :test_format, Item, {}
+    Xmlcellent::Parser.delete_formats!
+    assert_equal Xmlcellent::Parser.formats.length, 0
+  end
+
+  def teardown
+    Xmlcellent::Parser.delete_formats!
   end
 end

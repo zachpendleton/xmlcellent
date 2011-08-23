@@ -5,6 +5,10 @@ module Xmlcellent
     class << self
       attr_accessor :formats
 
+      def delete_formats!
+        @formats = {}
+      end
+
       def define_format(name, model = nil, config = {})
         @formats ||= {}
         raise "Format already exists!" if @formats.has_key? name
