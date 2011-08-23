@@ -1,7 +1,6 @@
 module Xmlcellent
   class Format
-    attr_reader :finder
-    attr_reader :lexicon
+    attr_reader :finder, :lexicon
 
     def initialize(config)
       @finder  = config[:finder]

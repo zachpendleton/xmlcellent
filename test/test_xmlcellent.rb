@@ -1,10 +1,7 @@
 require 'helper'
 
 class Item
-  attr_accessor :name
-  attr_accessor :summary
-  attr_accessor :color
-  attr_accessor :supplier
+  attr_accessor :name, :summary, :color, :supplier
 end
 
 class TestXmlcellent < Test::Unit::TestCase
