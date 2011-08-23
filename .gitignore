@@ -19,4 +19,4 @@ pkg
 *.swp
 
 # For bundler
-vendory/ruby
+vendor/ruby

@@ -1,6 +1,43 @@
 require 'helper'
 
+class Item
+  attr_accessor :name
+end
+
 class TestXmlcellent < Test::Unit::TestCase
+  def setup
+    @xml ||= <<-END
+      <items>
+        <item>
+          <name>Item one</name>
+          <description color="red">Lorem ipsum dolor</description>
+          <summary>
+            <paragraph>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit, posuere a, pede.</paragraph>
+            <paragraph>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit, posuere a, pede.</paragraph>
+            <paragraph>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit, posuere a, pede.</paragraph>
+          </summary>
+        </item>
+        <item>
+          <name>Item two</name>
+          <description color="blue">Lorem ipsum dolor</description>
+          <summary>
+            <paragraph>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit, posuere a, pede.</paragraph>
+            <paragraph>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit, posuere a, pede.</paragraph>
+            <paragraph>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit, posuere a, pede.</paragraph>
+          </summary>
+        </item>
+        <item>
+          <name>Item three</name>
+          <description color="yellow">Lorem ipsum dolor</description>
+          <summary>
+            <paragraph>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit, posuere a, pede.</paragraph>
+            <paragraph>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit, posuere a, pede.</paragraph>
+            <paragraph>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit, posuere a, pede.</paragraph>
+          </summary>
+        </item>
+
+    END
+  end
   def test_should_create_a_new_parser_on_call_to_define_parser
     Xmlcellent::Parser.define_format :format_one
     assert Xmlcellent::Parser.singleton_methods.include? :parse_format_one
@@ -21,6 +58,18 @@ class TestXmlcellent < Test::Unit::TestCase
     assert_raise(RuntimeError) do
       Xmlcellent::Parser.define_format :format_four
     end
+  end
+
+  def test_should_parse_xml_when_passed_a_string_of_xml
+    Xmlcellent::Parser.define_format :format_five, Item, {
+      :finder => "//item",
+      :lexicon => {
+        :name => "name"
+      }
+    }
+    result = Xmlcellent::Parser.parse_format_five(@xml)
+    assert_equal result.length, 3
+    assert_equal result[0].name, "Item one"
   end
 
 end
