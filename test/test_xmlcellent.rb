@@ -108,6 +108,26 @@ class TestXmlcellent < Test::Unit::TestCase
     assert_equal Xmlcellent::Parser.formats.length, 0
   end
 
+  def test_should_find_proper_format_using_the_finder_attribute
+    Xmlcellent::Parser.define_format :format_one, Item, {
+      :finder => "//item",
+      :lexicon => {
+        :name => "name"
+      }
+    }
+
+    Xmlcellent::Parser.define_format :format_two, Item, {
+      :finder => "//thing",
+      :lexicon => {
+        :name => "thing_name"
+      }
+    }
+
+    result = Xmlcellent::Parser.parse(@xml)
+    assert_equal result.length, 3
+    assert_equal result[0].name, "Item one"
+  end
+
   def teardown
     Xmlcellent::Parser.delete_formats!
   end

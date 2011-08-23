@@ -9,6 +9,16 @@ module Xmlcellent
         @formats = {}
       end
 
+      def parse(doc)
+        document = Nokogiri::XML(doc).remove_namespaces!
+        @formats.each do |key, format|
+          if document.xpath(format.finder).length > 0
+            return self.send("parse_#{key}".to_sym, doc)
+          end
+        end
+        raise "Error: Parser not found!"
+      end
+
       def define_format(name, model = nil, config = {})
         @formats ||= {}
         raise "Format already exists!" if @formats.has_key? name
