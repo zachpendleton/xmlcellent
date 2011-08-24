@@ -33,7 +33,8 @@ Gem::Specification.new do |s|
     "vendor/cache/jeweler-1.6.4.gem",
     "vendor/cache/nokogiri-1.5.0.gem",
     "vendor/cache/rake-0.9.2.gem",
-    "vendor/cache/rcov-0.9.10.gem"
+    "vendor/cache/rcov-0.9.10.gem",
+    "xmlcellent.gemspec"
   ]
   s.homepage = %q{http://github.com/zachpendleton/xmlcellent}
   s.licenses = [%q{MIT}]
