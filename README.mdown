@@ -10,6 +10,10 @@ a collection of models. You could do it the way you've always done it
 could use Xmlcellent and stop worrying. Xmlcellent: it's a more
 excellent way to turn XML into something you can use.
 
+## Installation
+
+    gem install xmlcellent
+
 ## Getting started
 
 It's simple: include `gem "xmlcellent"` in your Gemfile, and take a
@@ -28,12 +32,18 @@ look at this:
       </employee>
     </employees>
 
+    # Employee model
+    class Employee
+      attr_accessor :name, :company, :description, :hobby
+    end
+
     # Xmlcellent
     require "xmlcellent"
     Xmlcellent::Parser.define_format :employees, Employee, {
       :finder => "//employee"
       :lexicon => {
         :name => "name",
+        :company => "@company"
         :description => "description",
         :hobby => lambda { |obj|
           obj.xpath("hobby").text + "Skill: #{obj.xpath("hobby/@skill")}"
