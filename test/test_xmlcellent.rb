@@ -125,6 +125,18 @@ class TestXmlcellent < Test::Unit::TestCase
     assert_equal result[0].name, "Item one"
   end
 
+  def test_should_call_parser_parse_on_call_to_parse_shortcut
+    Xmlcellent::Parser.define_format :test_format, Item, {
+      :finder => "//item",
+      :lexicon => {
+        :name => "name"
+      }
+    }
+
+    result = Xmlcellent.parse(@xml)
+    assert_equal result.length, 3
+  end
+
   def teardown
     Xmlcellent::Parser.delete_formats!
   end

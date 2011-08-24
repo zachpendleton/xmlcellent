@@ -1,6 +1,73 @@
-# xmlcellent
+# Xmlcellent
 
-Description goes here.
+_A more excellent way to parse XML into Ruby models and objects_
+
+## About
+
+Imagine you have some XML in your application that you need to turn into
+a collection of models. You could do it the way you've always done it
+&ndash; loop through some XML, creating models as you go &ndash; or you
+could use Xmlcellent and stop worrying. Xmlcellent: it's a more
+excellent way to turn XML into something you can use.
+
+## Getting started
+
+It's simple: include `gem "xmlcellent"` in your Gemfile, and take a
+look at this:
+
+    # Sample XML
+    <employees>
+      <employee company="Sterling Cooper">
+        <name>Don Draper</name>
+        <description>
+          <paragraph>Lorem ipsum dolor.</paragraph>
+          <paragraph>Sit amet consecteteur.</paragraph>
+          <paragraph>Adipiscing elit donec odio.</paragraph>
+        </description>
+        <hobby skill="excellent">Philandering</hobby>
+      </employee>
+    </employees>
+
+    # Xmlcellent
+    require "xmlcellent"
+    Xmlcellent::Parser.define_format :employees, Employee, {
+      :finder => "//employee"
+      :lexicon => {
+        :name => "name",
+        :description => "description",
+        :hobby => lambda { |obj|
+          obj.xpath("hobby").text + "Skill: #{obj.xpath("hobby/@skill")}"
+        }
+      }
+    }
+
+    Xmlcellent::Parser.parse(@xml_string)
+    puts Xmlcellent::Parser.results
+
+## How to use
+
+The parser does not need to be instantiated; it can be controlled
+through two class methods: `parse` and `define_format`. `define_format`
+is used to describe your XML structure to the Parser. It takes three
+arguments:
+
+1.  A descriptive name as a hash. e.g. `:employees`;
+2.  A model to map to. e.g. `Employee`; and
+3.  A hash with `:finder` and `:lexicon` keys.
+
+The `:finder` key is the XPath route to the object in the XML, and the
+`:lexicon` key is a hash with properties of the model as keys and xpath
+expressions as values. `:lexicon` will also accept a lambda as a value,
+which is passed the XML representation of the model and should return
+the value to set it to. This allows for some data manipulation,
+concatenation, etc. of the XML.
+
+`define_format` creates a new class method on `Xmlcellent::Parser`
+named `parse_format_name`, with `format_name` being the name you
+passed `define_format`. As a convenience, there is also an
+`Xmlcellent.parse` method that loops through the the parser's defined
+formats and runs the first format whose `:finder` returns a match
+on the given XML.
 
 ## Contributing to xmlcellent
  
