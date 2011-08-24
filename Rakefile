@@ -17,8 +17,8 @@ Jeweler::Tasks.new do |gem|
   gem.name = "xmlcellent"
   gem.homepage = "http://github.com/zachpendleton/xmlcellent"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
+  gem.summary = %Q{A more xmlcellent way to parse XML into models}
+  gem.description = %Q{An XML parser that uses Nokogiri and dynamic methods to transform XML data into a given Ruby model}
   gem.email = "zachpendleton@gmail.com"
   gem.authors = ["Zach Pendleton"]
   # dependencies defined in Gemfile
